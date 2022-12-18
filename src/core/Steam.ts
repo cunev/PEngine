@@ -26,7 +26,6 @@ export class Client {
           Buffer.from(JSON.stringify({ type: "ping" }))
         );
       });
-      console.log("Ping!");
     }
     let packetSize: number;
     while ((packetSize = client.networking.isP2PPacketAvailable()) > 0) {
@@ -63,7 +62,7 @@ export class Client {
       m: message,
     };
     if (this.isHost) {
-      this.broadcast(Buffer.from(message));
+      this.broadcast(Buffer.from(JSON.stringify(formatted)));
       return;
     }
 

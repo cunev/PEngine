@@ -21,7 +21,7 @@ export class InputManager {
     win.on("keydown", (e) => {
       if (e.repeat) return;
 
-      Client.send(client.localplayer.getName + "pressed " + e.key);
+      Client.send(client.localplayer.getName() + "pressed " + e.key);
 
       if (e.key == "F11") {
         win.fullscreen = !win.fullscreen;
