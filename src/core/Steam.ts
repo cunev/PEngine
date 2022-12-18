@@ -1,7 +1,6 @@
 const GAMEID = 2250500;
 import { init, SteamCallback } from "steamworks.js";
 export const client = init(GAMEID);
-
 interface MultiplayerMessage {
   steamId: string;
   data: Record<string, any>;
@@ -69,7 +68,7 @@ export async function connectTestserver() {
     lobby = lobbies[0];
   }
 
-  lobby.join();
+  await client.matchmaking.joinJobby(lobby.id);
 
   if (lobby.getOwner().accountId == client.localplayer.getSteamId().accountId) {
     Client.isHost = true;
@@ -77,12 +76,15 @@ export async function connectTestserver() {
 
   Client.isConnected = true;
   Client.lobby = lobby;
-
+  console.log(Client.isHost);
+  console.log(lobby.id);
   lobby.getMembers().forEach((peer) => {
-    client.networking.sendP2PPacket(
-      peer.steamId64,
-      client.networking.SendType.Reliable,
-      Buffer.from("HELLO from me" + client.localplayer.getName())
+    console.log(
+      client.networking.sendP2PPacket(
+        peer.steamId64,
+        client.networking.SendType.Reliable,
+        Buffer.from("HELLO from me" + client.localplayer.getName())
+      )
     );
   });
 
