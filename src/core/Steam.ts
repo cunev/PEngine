@@ -80,6 +80,7 @@ export async function connectTestserver() {
     );
   } else {
     lobby = lobbies[0];
+    await client.matchmaking.joinJobby(lobby.id);
   }
 
   if (lobby.getOwner().accountId == client.localplayer.getSteamId().accountId) {
