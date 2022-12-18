@@ -11,11 +11,25 @@ export class Client {
   static isConnected: boolean = false;
   static lobby: Awaited<ReturnType<typeof client.matchmaking.createLobby>>;
 
-  static startListening() {
+  private static timer = 0;
+  private static lastTime = Date.now();
+
+  static listen() {
+    this.timer = Date.now() - this.lastTime;
+    if (this.timer > 1000) {
+      this.timer = 0;
+      this.lastTime = Date.now();
+      this.lobby.getMembers().forEach((member) => {
+        client.networking.sendP2PPacket(
+          member.steamId64,
+          client.networking.SendType.Reliable,
+          Buffer.from([1])
+        );
+      });
+      console.log("Ping!");
+    }
     let packetSize: number;
     while ((packetSize = client.networking.isP2PPacketAvailable()) > 0) {
-      console.log(packetSize);
-
       const { steamId, data } = client.networking.readP2PPacket(packetSize);
       console.log(data.toString());
       //   if (this.isHost) this.broadcast(packet.data);
@@ -56,56 +70,22 @@ export class Client {
   }
 }
 
-import rl from "readline";
 export async function connectTestserver() {
   const lobbies = await client.matchmaking.getLobbies();
-  const rlInterface = rl.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
+  let lobby: Awaited<ReturnType<typeof client.matchmaking.createLobby>>;
+  if (lobbies.length == 0) {
+    lobby = await client.matchmaking.createLobby(
+      client.matchmaking.LobbyType.Public,
+      8
+    );
+  } else {
+    lobby = lobbies[0];
+  }
 
-  rlInterface.question(
-    "Enter a lobby id or press enter to create one: ",
-    async (lobbyId: string | number | bigint | boolean) => {
-      let lobby;
-      if (lobbyId) {
-        lobby = await client.matchmaking.joinJobby(BigInt(lobbyId));
-        lobby.getMembers().forEach((peer) => {
-          client.networking.sendP2PPacket(
-            peer.steamId64,
-            client.networking.SendType.Reliable,
-            Buffer.from("Connection request")
-          );
-        });
-      } else {
-        lobby = await client.matchmaking.createLobby(
-          client.matchmaking.LobbyType.Public,
-          10
-        );
-        console.log(`Created lobby with id ${lobby.id}`);
-      }
+  if (lobby.getOwner().accountId == client.localplayer.getSteamId().accountId) {
+    Client.isHost = true;
+  }
 
-      if (
-        lobby.getOwner().accountId == client.localplayer.getSteamId().accountId
-      ) {
-        Client.isHost = true;
-      }
-
-      Client.isConnected = true;
-      Client.lobby = lobby;
-      console.log(Client.isHost);
-      console.log(lobby.id);
-      console.log(lobby.getMembers());
-      lobby.getMembers().forEach((peer) => {
-        console.log("sending to " + peer.accountId);
-        client.networking.sendP2PPacket(
-          peer.steamId64,
-          client.networking.SendType.Reliable,
-          Buffer.from("HELLO from me" + client.localplayer.getName())
-        );
-      });
-
-      Client.startListening();
-    }
-  );
+  Client.isConnected = true;
+  Client.lobby = lobby;
 }

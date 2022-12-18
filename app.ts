@@ -7,7 +7,7 @@ import { PlayerEntity } from "./src/entities/player/PlayerEntity";
 import { loadAssets } from "./src/core/TextureManager";
 import { Inventory } from "./src/gui/Inventory";
 import TWEEN from "@tweenjs/tween.js";
-import { Client, client, connectTestserver } from "./src/core/Steam";
+import { Client, connectTestserver } from "./src/core/Steam";
 
 export let ctx: CanvasRenderingContext2D;
 export let win: Window;
@@ -22,31 +22,29 @@ async function main() {
 App.fps = 144;
 
 function createWindow() {
-  setInterval(() => {
-    Client.startListening();
+  win = new Window(1920, 1080, { left: 1920, top: 0 });
+  win.title = "Pretend Engine";
+  win.fullscreen = true;
+  ctx = win.canvas.getContext("2d");
+  InputManager.createInput();
+  Inventory.create();
+  let entity = new PlayerEntity();
+  Camera.focus(entity);
+  let lastTime = Date.now();
+  win.on("draw", () => {
+    Client.listen();
+    ctx.fillStyle = "#1E1E1E";
+    ctx.fillRect(0, 0, 1920, 1080);
+    dt = (Date.now() - lastTime) / 8;
+    lastTime = Date.now();
+    Camera.update();
+    for (const entity of Entity.all) {
+      entity.update();
+      entity.draw();
+    }
+    Inventory.update();
+    TWEEN.update();
   });
-  // win = new Window(1920, 1080, { left: 1920, top: 0 });
-  // win.title = "Pretend Engine";
-  // win.fullscreen = true;
-  // ctx = win.canvas.getContext("2d");
-  // InputManager.createInput();
-  // Inventory.create();
-  // let entity = new PlayerEntity();
-  // Camera.focus(entity);
-  // let lastTime = Date.now();
-  // win.on("draw", () => {
-  //   ctx.fillStyle = "#1E1E1E";
-  //   ctx.fillRect(0, 0, 1920, 1080);
-  //   dt = (Date.now() - lastTime) / 8;
-  //   lastTime = Date.now();
-  //   Camera.update();
-  //   for (const entity of Entity.all) {
-  //     entity.update();
-  //     entity.draw();
-  //   }
-  //   Inventory.update();
-  //   TWEEN.update();
-  // });
 }
 
 main();
