@@ -23,16 +23,19 @@ export class Client {
         client.networking.sendP2PPacket(
           member.steamId64,
           client.networking.SendType.Reliable,
-          Buffer.from([1])
+          Buffer.from(JSON.stringify({ type: "ping" }))
         );
       });
       console.log("Ping!");
     }
     let packetSize: number;
     while ((packetSize = client.networking.isP2PPacketAvailable()) > 0) {
-      const { steamId, data } = client.networking.readP2PPacket(packetSize);
-      console.log(data.toString());
-      //   if (this.isHost) this.broadcast(packet.data);
+      const packet = client.networking.readP2PPacket(packetSize);
+      const data = JSON.parse(packet.data.toString());
+      if (data.type == "ping") return;
+      if (this.isHost) this.broadcast(packet.data);
+
+      console.log(data);
     }
   }
 
@@ -55,6 +58,10 @@ export class Client {
   }
 
   static send(message: string) {
+    const formatted = {
+      t: 1,
+      m: message,
+    };
     if (this.isHost) {
       this.broadcast(Buffer.from(message));
       return;
@@ -65,7 +72,7 @@ export class Client {
     client.networking.sendP2PPacket(
       host.steamId64,
       client.networking.SendType.Reliable,
-      Buffer.from(message)
+      Buffer.from(JSON.stringify(formatted))
     );
   }
 }
