@@ -6,7 +6,7 @@
   "author": "Dmitri S. Cunev & Constantin N. Chitorog",
   "license": "MIT",
   "scripts": {
-    "dev": "tsx watch app.ts"
+    "dev": "tsx app.ts"
   },
   "devDependencies": {
     "@types/node": "^18.11.16",
