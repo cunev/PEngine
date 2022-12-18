@@ -86,7 +86,7 @@ export class Inventory {
     );
     if (this.inventoryShowing) {
       new Tween({ value: 0.7 })
-        .to({ value: 1 }, 200)
+        .to({ value: 0.8 }, 200)
         .easing(Easing.Quadratic.Out)
         .onUpdate((value) => {
           Camera.scale = value.value;
@@ -98,7 +98,7 @@ export class Inventory {
         slot.visible = true;
       }
     } else {
-      new Tween({ value: 1 })
+      new Tween({ value: 0.8 })
         .to({ value: 0.7 }, 200)
         .easing(Easing.Quadratic.Out)
 

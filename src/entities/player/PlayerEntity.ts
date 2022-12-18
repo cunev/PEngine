@@ -2,6 +2,7 @@ import { ctx, dt } from "../../../app";
 import { Entity } from "../../core/Entity";
 import { InputManager } from "../../core/InputManager";
 import { Vector2 } from "../../core/Math";
+import { client } from "../../core/Steam";
 import { assets } from "../../core/TextureManager";
 import { IdleAnimation } from "./animations/IdleAnimation";
 import { RunAnimation } from "./animations/RunAnimation";
