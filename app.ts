@@ -7,7 +7,7 @@ import { PlayerEntity } from "./src/entities/player/PlayerEntity";
 import { loadAssets } from "./src/core/TextureManager";
 import { Inventory } from "./src/gui/Inventory";
 import TWEEN from "@tweenjs/tween.js";
-import { client, connectTestserver } from "./src/core/Steam";
+import { Client, client, connectTestserver } from "./src/core/Steam";
 
 export let ctx: CanvasRenderingContext2D;
 export let win: Window;
@@ -34,6 +34,7 @@ function createWindow() {
   Camera.focus(entity);
   let lastTime = Date.now();
   win.on("draw", () => {
+    Client.startListening();
     ctx.fillStyle = "#1E1E1E";
     ctx.fillRect(0, 0, 1920, 1080);
     dt = (Date.now() - lastTime) / 8;

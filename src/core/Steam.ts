@@ -1,7 +1,17 @@
 const GAMEID = 2250500;
-import { init } from "steamworks.js";
+import { init, SteamCallback } from "steamworks.js";
 export const client = init(GAMEID);
+client.callback.register(SteamCallback.P2PSessionRequest, ({ remote }) => {
+  console.log(`P2PSessionRequest from ${remote}`);
+  client.networking.acceptP2PSession(remote as any);
+});
 
+client.callback.register(
+  SteamCallback.P2PSessionConnectFail,
+  ({ remote, error }) => {
+    console.log(`Failed to connect to ${remote} with error ${error}`);
+  }
+);
 interface MultiplayerMessage {
   steamId: string;
   data: Record<string, any>;
@@ -13,13 +23,12 @@ export class Client {
   static lobby: Awaited<ReturnType<typeof client.matchmaking.createLobby>>;
 
   static startListening() {
-    setInterval(() => {
-      const packetSize = client.networking.isP2PPacketAvailable();
-      if (packetSize) {
-        const packet = client.networking.readP2PPacket(packetSize);
-        if (this.isHost) this.broadcast(packet.data);
-      }
-    }, 16.6);
+    let packetSize: number;
+
+    while ((packetSize = client.networking.isP2PPacketAvailable()) > 0) {
+      const packet = client.networking.readP2PPacket(packetSize);
+      if (this.isHost) this.broadcast(packet.data);
+    }
   }
 
   static broadcast(message: Buffer) {
@@ -76,6 +85,8 @@ export async function connectTestserver() {
   Client.lobby = lobby;
 
   Client.startListening();
+
+  console.log(lobby.id);
 
   Client.send("Negro!");
 }
