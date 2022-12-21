@@ -3,13 +3,22 @@ import { Camera } from "../core/Camera";
 import { InputManager } from "../core/InputManager";
 import { Tween, Easing } from "@tweenjs/tween.js";
 import { assets } from "../core/TextureManager";
-import { largeText } from "../core/Text";
+import { largeText, smallText } from "../core/Text";
 import { Slot } from "./Slot";
+import { Button } from "./Button";
+import { RedShroom } from "../items/RedShroom";
+import { Item } from "../items/Item";
+import { BlueShroom } from "../items/BlueShroom";
 export class Inventory {
   private static inventoryShowing = false;
   private static slots: Slot[] = [];
   private static startSlot: Slot;
-  private static dragItem = 0;
+  private static dragItem: { item: Item | null; quantity: number } = {
+    item: null,
+    quantity: 0,
+  };
+
+  private static craftingButtons: Button[] = [];
 
   static create() {
     win.on("keydown", (e) => {
@@ -30,8 +39,11 @@ export class Inventory {
       }
       if (!selectedSlot) return;
       this.startSlot = selectedSlot;
-      this.dragItem = selectedSlot.holdItem;
-      selectedSlot.holdItem = 0;
+      this.dragItem.item = selectedSlot.holdItem;
+      this.dragItem.quantity = selectedSlot.quantity;
+
+      selectedSlot.holdItem = null;
+      selectedSlot.quantity = 1;
     });
 
     win.on("mouseup", (e) => {
@@ -45,24 +57,36 @@ export class Inventory {
         }
       }
       if (!selectedSlot) {
-        if (this.dragItem) {
-          this.startSlot.holdItem = this.dragItem;
-          this.dragItem = 0;
+        if (this.dragItem && this.startSlot) {
+          this.startSlot.holdItem = this.dragItem.item;
+          this.startSlot.quantity = this.dragItem.quantity;
+          this.dragItem.item = null;
         }
         return;
       }
 
-      this.startSlot.holdItem = selectedSlot.holdItem;
-      selectedSlot.holdItem = this.dragItem;
+      if (
+        selectedSlot.holdItem &&
+        selectedSlot.holdItem.id == this.dragItem.item!.id
+      ) {
+        this.startSlot.holdItem = null;
+        this.startSlot.quantity = 1;
+        selectedSlot.quantity += this.dragItem.quantity;
+      } else {
+        this.startSlot.holdItem = selectedSlot.holdItem;
+        this.startSlot.quantity = selectedSlot.quantity;
+        selectedSlot.holdItem = this.dragItem.item;
+        selectedSlot.quantity = this.dragItem.quantity;
+      }
 
-      this.dragItem = 0;
+      this.dragItem.item = null;
     });
 
     for (let i = 0; i < 4; i++) {
       let createdSlot = new Slot();
       createdSlot.position = { x: 25 + 130 * i, y: 25 };
       createdSlot.tag = "main";
-      createdSlot.holdItem = 1;
+      createdSlot.holdItem = new RedShroom();
       this.slots.push(createdSlot);
     }
 
@@ -76,7 +100,15 @@ export class Inventory {
       }
     }
 
-    this.slots[6].holdItem = 3;
+    this.slots[6].holdItem = new BlueShroom();
+    this.slots[6].quantity = 3;
+
+    for (let i = 0; i < 4; i++) {
+      let createdButton = new Button();
+      createdButton.position = { x: 600, y: 270 + i * 80 };
+      createdButton.holdItem = new RedShroom();
+      this.craftingButtons.push(createdButton);
+    }
   }
 
   static toggle() {
@@ -127,15 +159,25 @@ export class Inventory {
 
     if (this.inventoryShowing) {
       largeText("Inventory", 32, 240);
+      largeText("Crafting", 600, 240);
+      for (const button of this.craftingButtons) {
+        button.draw();
+      }
     }
     this.drawDragItem();
     ctx.restore();
   }
 
   static drawDragItem() {
-    if (!this.dragItem) return;
+    if (!this.dragItem.item) return;
 
-    const itemTexture = assets.get(`item${this.dragItem}.png`)!;
+    if (this.dragItem.quantity > 1)
+      smallText(
+        this.dragItem.quantity.toString(),
+        InputManager.relativeMouseX + 14 - 123 / 2,
+        InputManager.relativeMouseY + 110 - 123 / 2
+      );
+    const itemTexture = this.dragItem.item.texture;
     if (itemTexture.width > 120 || itemTexture.height > 120) {
       if (itemTexture.height > itemTexture.width) {
         const ratio = itemTexture.width / itemTexture.height;

@@ -1,13 +1,16 @@
 import { ctx } from "../../app";
 import { InputManager } from "../core/InputManager";
 import { Vector2 } from "../core/Math";
+import { smallText } from "../core/Text";
 import { assets } from "../core/TextureManager";
+import { Item } from "../items/Item";
 
 export class Slot {
-  holdItem: number = 0;
+  holdItem: Item | null = null;
   position: Vector2 = { x: 0, y: 0 };
   tag: string = "";
   visible: boolean = true;
+  quantity: number = 1;
   draw() {
     if (!this.visible) return;
     ctx.drawImage(
@@ -15,7 +18,13 @@ export class Slot {
       this.position.x,
       this.position.y
     );
-    if (this.holdItem > 0) this.drawItem();
+    if (this.quantity > 1)
+      smallText(
+        this.quantity.toString(),
+        this.position.x + 14,
+        this.position.y + 110
+      );
+    if (this.holdItem) this.drawItem();
   }
 
   isInside() {
@@ -29,7 +38,7 @@ export class Slot {
   }
 
   private drawItem() {
-    const itemTexture = assets.get(`item${this.holdItem}.png`)!;
+    const itemTexture = this.holdItem!.texture;
     if (itemTexture.width > 120 || itemTexture.height > 120) {
       if (itemTexture.height > itemTexture.width) {
         const ratio = itemTexture.width / itemTexture.height;

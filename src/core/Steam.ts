@@ -5,7 +5,6 @@ interface MultiplayerMessage {
   steamId: string;
   data: Record<string, any>;
 }
-
 export class Client {
   static isHost: boolean = false;
   static isConnected: boolean = false;
@@ -42,8 +41,6 @@ export class Client {
     if (!this.isHost) {
       return;
     }
-    console.log("broadcasting packet");
-
     const members = this.lobby.getMembers();
     for (const member of members) {
       if (member.accountId == this.lobby.getOwner().accountId) continue;
@@ -56,22 +53,16 @@ export class Client {
     }
   }
 
-  static send(message: string) {
-    const formatted = {
-      t: 1,
-      m: message,
-    };
+  static send(message: Record<string, any>) {
     if (this.isHost) {
-      this.broadcast(Buffer.from(JSON.stringify(formatted)));
+      this.broadcast(Buffer.from(JSON.stringify(message)));
       return;
     }
-
-    console.log("sending packet");
     const host = this.lobby.getOwner();
     client.networking.sendP2PPacket(
       host.steamId64,
       client.networking.SendType.Reliable,
-      Buffer.from(JSON.stringify(formatted))
+      Buffer.from(JSON.stringify(message))
     );
   }
 }
