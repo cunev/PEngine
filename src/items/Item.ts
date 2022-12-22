@@ -1,22 +1,32 @@
 import { Image } from "skia-canvas/lib";
+import { assets } from "../core/TextureManager";
 
 export abstract class Item {
-  static all: Map<string, Item> = new Map<string, Item>();
-  abstract id: string;
+  type = "Misc";
   abstract name: string;
   abstract description: string;
-  abstract craftable: boolean;
-  abstract recipe: [typeof Item, number][];
-  abstract texture: Image;
+  abstract texture: string;
+  abstract getRecipe(): { item: Item; amount: number }[];
 
   constructor() {
-    setImmediate(() => {
-      this.register();
-    });
+    console.log("new item");
   }
 
-  private register() {
-    Item.all.set(this.id, this);
-    console.log(this.id);
-  }
+  private textureImage?: Image;
+
+  getTexture = () => {
+    if (this.textureImage) {
+      return this.textureImage;
+    }
+    this.textureImage = assets.get(this.texture)!;
+    return this.textureImage;
+  };
+}
+
+export abstract class Consumable extends Item {
+  type = "Consumable";
+}
+
+export abstract class Weapon extends Item {
+  type = "Weapon";
 }

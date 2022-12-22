@@ -2,7 +2,7 @@ import { EventEmitter } from "events";
 import { win } from "../../app";
 import { Camera } from "./Camera";
 import { Vector2 } from "./Math";
-import { client, Client } from "./Steam";
+// import { client, Client } from "./Steam";
 
 export class InputManager {
   static events = new EventEmitter();
@@ -21,7 +21,7 @@ export class InputManager {
     win.on("keydown", (e) => {
       if (e.repeat) return;
 
-      Client.send({ text: client.localplayer.getName() + "pressed " + e.key });
+      // Client.send({ text: client.localplayer.getName() + "pressed " + e.key });
 
       if (e.key == "F11") {
         win.fullscreen = !win.fullscreen;

@@ -38,7 +38,7 @@ export class Slot {
   }
 
   private drawItem() {
-    const itemTexture = this.holdItem!.texture;
+    const itemTexture = this.holdItem!.getTexture();
     if (itemTexture.width > 120 || itemTexture.height > 120) {
       if (itemTexture.height > itemTexture.width) {
         const ratio = itemTexture.width / itemTexture.height;

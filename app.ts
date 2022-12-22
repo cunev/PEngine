@@ -7,19 +7,20 @@ import { PlayerEntity } from "./src/entities/player/PlayerEntity";
 import { loadAssets } from "./src/core/TextureManager";
 import { Inventory } from "./src/gui/Inventory";
 import TWEEN from "@tweenjs/tween.js";
-import { Client, connectTestserver } from "./src/core/Steam";
+// import { Client, connectTestserver } from "./src/core/Steam";
+import { AfterDraw } from "./src/core/AfterDraw";
 
 export let ctx: CanvasRenderingContext2D;
 export let win: Window;
 export let dt: number = 0;
 
 async function main() {
-  await connectTestserver();
+  // await connectTestserver();
   await loadAssets();
   createWindow();
 }
 
-App.fps = 144;
+App.fps = 200;
 
 function createWindow() {
   win = new Window(1920, 1080, { left: 1920, top: 0 });
@@ -32,7 +33,7 @@ function createWindow() {
   Camera.focus(entity);
   let lastTime = Date.now();
   win.on("draw", () => {
-    Client.listen();
+    // Client.listen();
     ctx.fillStyle = "#1E1E1E";
     ctx.fillRect(0, 0, 1920, 1080);
     dt = (Date.now() - lastTime) / 8;
@@ -43,6 +44,7 @@ function createWindow() {
       entity.draw();
     }
     Inventory.update();
+    AfterDraw.drawAfterDraw();
     TWEEN.update();
   });
 }

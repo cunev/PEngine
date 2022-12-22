@@ -6,9 +6,11 @@ import { assets } from "../core/TextureManager";
 import { largeText, smallText } from "../core/Text";
 import { Slot } from "./Slot";
 import { Button } from "./Button";
-import { RedShroom } from "../items/RedShroom";
 import { Item } from "../items/Item";
-import { BlueShroom } from "../items/BlueShroom";
+import { BlueShroom } from "../items/consumables/BlueShroom";
+import { Stick } from "../items/elements/Stick";
+import { Workbench } from "../items/stations/Workbench";
+import { Campfire } from "../items/stations/Campfire";
 export class Inventory {
   private static inventoryShowing = false;
   private static slots: Slot[] = [];
@@ -57,7 +59,7 @@ export class Inventory {
         }
       }
       if (!selectedSlot) {
-        if (this.dragItem && this.startSlot) {
+        if (this.dragItem && this.startSlot && this.dragItem.item) {
           this.startSlot.holdItem = this.dragItem.item;
           this.startSlot.quantity = this.dragItem.quantity;
           this.dragItem.item = null;
@@ -67,7 +69,7 @@ export class Inventory {
 
       if (
         selectedSlot.holdItem &&
-        selectedSlot.holdItem.id == this.dragItem.item!.id
+        selectedSlot.holdItem.name == this.dragItem.item!.name
       ) {
         this.startSlot.holdItem = null;
         this.startSlot.quantity = 1;
@@ -86,7 +88,6 @@ export class Inventory {
       let createdSlot = new Slot();
       createdSlot.position = { x: 25 + 130 * i, y: 25 };
       createdSlot.tag = "main";
-      createdSlot.holdItem = new RedShroom();
       this.slots.push(createdSlot);
     }
 
@@ -99,16 +100,18 @@ export class Inventory {
         this.slots.push(createdSlot);
       }
     }
+    this.slots[6].holdItem = Stick.instance;
+    this.slots[6].quantity = 5;
 
-    this.slots[6].holdItem = new BlueShroom();
-    this.slots[6].quantity = 3;
-
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 3; i++) {
       let createdButton = new Button();
-      createdButton.position = { x: 600, y: 270 + i * 80 };
-      createdButton.holdItem = new RedShroom();
+      createdButton.position = { x: 600, y: 270 + i * 86 };
       this.craftingButtons.push(createdButton);
     }
+
+    this.craftingButtons[0].holdItem = Workbench.instance;
+    this.craftingButtons[1].holdItem = Campfire.instance;
+    this.craftingButtons[2].holdItem = Stick.instance;
   }
 
   static toggle() {
@@ -177,7 +180,7 @@ export class Inventory {
         InputManager.relativeMouseX + 14 - 123 / 2,
         InputManager.relativeMouseY + 110 - 123 / 2
       );
-    const itemTexture = this.dragItem.item.texture;
+    const itemTexture = this.dragItem.item.getTexture();
     if (itemTexture.width > 120 || itemTexture.height > 120) {
       if (itemTexture.height > itemTexture.width) {
         const ratio = itemTexture.width / itemTexture.height;
