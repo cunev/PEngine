@@ -10,6 +10,7 @@ export function loadTexture(path: string) {
   const img = ctx.LoadImage(path);
   const texture = ctx.LoadTextureFromImage(img);
   ctx.UnloadImage(img);
+  ctx.SetTextureFilter(texture, ctx.TEXTURE_FILTER_BILINEAR);
   return texture;
 }
 

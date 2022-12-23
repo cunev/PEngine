@@ -103,7 +103,7 @@ export class Inventory {
         this.slots.push(createdSlot);
       }
     }
-    this.slots[2].holdItem = Rock.instance;
+    this.slots[2].holdItem = Workbench.instance;
     this.slots[2].quantity = 5;
 
     for (let i = 0; i < 3; i++) {

@@ -69,13 +69,13 @@ export class Button {
           ctx.DrawTexturePro(
             itemTexture,
             {
-              x: 0,
-              y: 0,
+              x: 61.5 - (ratio * 90) / 2,
+              y: 61.5 - 45 + index * 60,
               width: itemTexture.width,
               height: itemTexture.height,
             },
             { x: 0, y: 0, width: ratio * 45, height: 45 },
-            { x: 61.5 - (ratio * 90) / 2, y: 61.5 - 45 + index * 60 },
+            { x: 0, y: 0 },
             0,
             ctx.WHITE
           );
@@ -84,13 +84,13 @@ export class Button {
           ctx.DrawTexturePro(
             itemTexture,
             {
-              x: 0,
-              y: 0,
+              x: 61.5 - 45,
+              y: 61.5 - (ratio * 90) / 2 + index * 60,
               width: itemTexture.width,
               height: itemTexture.height,
             },
             { x: 0, y: 0, width: 45, height: ratio * 45 },
-            { x: 61.5 - 45, y: 61.5 - (ratio * 90) / 2 + index * 60 },
+            { x: 0, y: 0 },
             0,
             ctx.WHITE
           );
@@ -111,13 +111,13 @@ export class Button {
       ctx.DrawTexturePro(
         itemTexture,
         {
-          x: 0,
-          y: 0,
+          x: 58 - (ratio * 72) / 2,
+          y: 44 - 36,
           width: itemTexture.width,
           height: itemTexture.height,
         },
         { x: 0, y: 0, width: ratio * 55, height: 55 },
-        { x: 58 - (ratio * 72) / 2, y: 44 - 36 },
+        { x: 0, y: 0 },
         0,
         ctx.WHITE
       );
@@ -126,13 +126,13 @@ export class Button {
       ctx.DrawTexturePro(
         itemTexture,
         {
-          x: 0,
-          y: 0,
+          x: 25,
+          y: 44 - (ratio * 72) / 2,
           width: itemTexture.width,
           height: itemTexture.height,
         },
         { x: 0, y: 0, width: 55, height: ratio * 55 },
-        { x: 25, y: 44 - (ratio * 72) / 2 },
+        { x: 0, y: 0 },
         0,
         ctx.WHITE
       );
