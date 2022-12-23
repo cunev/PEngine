@@ -15,7 +15,7 @@ export class Button {
   private xoff = 0;
   draw() {
     if (!this.visible) return;
-
+    ctx.rlPushMatrix();
     ctx.rlTranslatef(this.position.x, this.position.y, 0);
     if (this.isInside()) {
       // ctx.globalAlpha = 1;
@@ -29,6 +29,7 @@ export class Button {
     if (this.isInside()) {
       this.drawNotice();
     }
+    ctx.rlPopMatrix();
   }
 
   isInside() {

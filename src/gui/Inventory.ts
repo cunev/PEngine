@@ -26,12 +26,11 @@ export class Inventory {
   private static craftingButtons: Button[] = [];
 
   static create() {
-    // win.on("keydown", (e) => {
-    //   if (e.repeat) return;
-    //   if (e.key == "Tab") {
-    //     this.toggle();
-    //   }
-    // });
+    InputManager.events.on("keydown", (e) => {
+      if (e == ctx.KEY_TAB) {
+        this.toggle();
+      }
+    });
     // win.on("mousedown", (e) => {
     //   if (e.button !== 0) return;
     //   let selectedSlot: Slot | null = null;
@@ -118,6 +117,7 @@ export class Inventory {
   }
 
   static toggle() {
+    console.log("abc");
     this.inventoryShowing = !this.inventoryShowing;
     const inventorySlots = this.slots.filter(
       (slot) => slot.tag === "inventory"

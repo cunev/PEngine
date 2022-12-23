@@ -13,6 +13,8 @@ export class Slot {
   quantity: number = 1;
   draw() {
     if (!this.visible) return;
+    ctx.rlPushMatrix();
+
     ctx.DrawTexture(
       assets.get("inventorySlot.png")!,
       this.position.x,
@@ -26,6 +28,7 @@ export class Slot {
         this.position.y + 110
       );
     if (this.holdItem) this.drawItem();
+    ctx.rlPopMatrix();
   }
 
   isInside() {

@@ -13,7 +13,22 @@ export class InputManager {
   static relativeMouseX = 0;
   static relativeMouseY = 0;
 
+  private static keys: Set<number> = new Set<number>();
+
   static updateInput() {
+    const keypressed = ctx.GetKeyPressed();
+    if (keypressed) {
+      this.keys.add(keypressed);
+      this.events.emit("keydown", keypressed);
+    }
+
+    for (const key of this.keys) {
+      if (!ctx.IsKeyDown(key)) {
+        this.keys.delete(key);
+        this.events.emit("keyup", key);
+      }
+    }
+
     const mouseposition = ctx.GetMousePosition();
     this.relativeMouseX = mouseposition.x;
     this.relativeMouseY = mouseposition.y;
@@ -41,9 +56,6 @@ export class InputManager {
     if (this.moving && !(this.inputAxis.x || this.inputAxis.y)) {
       this.moving = false;
       if (!this.inputBlocked) this.events.emit("move", false);
-    }
-    if (this.inputAxis.x || this.inputAxis.y) {
-      //   if (!this.inputBlocked) this.events.emit("inputkey");
     }
   }
 
