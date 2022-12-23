@@ -1,5 +1,5 @@
 import { EventEmitter } from "events";
-import { win } from "../../app";
+import { ctx } from "../../app";
 import { Camera } from "./Camera";
 import { Vector2 } from "./Math";
 // import { client, Client } from "./Steam";
@@ -13,62 +13,38 @@ export class InputManager {
   static relativeMouseX = 0;
   static relativeMouseY = 0;
 
-  static createInput() {
-    win.on("mousemove", (e) => {
-      this.relativeMouseX = e.x;
-      this.relativeMouseY = e.y;
-    });
-    win.on("keydown", (e) => {
-      if (e.repeat) return;
+  static updateInput() {
+    const mouseposition = ctx.GetMousePosition();
+    this.relativeMouseX = mouseposition.x;
+    this.relativeMouseY = mouseposition.y;
 
-      // Client.send({ text: client.localplayer.getName() + "pressed " + e.key });
+    this.inputAxis = { x: 0, y: 0 };
 
-      if (e.key == "F11") {
-        win.fullscreen = !win.fullscreen;
-      }
+    if (ctx.IsKeyDown(ctx.KEY_A)) {
+      this.inputAxis.x -= 1;
+    }
+    if (ctx.IsKeyDown(ctx.KEY_D)) {
+      this.inputAxis.x += 1;
+    }
+    if (ctx.IsKeyDown(ctx.KEY_W)) {
+      this.inputAxis.y -= 1;
+    }
+    if (ctx.IsKeyDown(ctx.KEY_S)) {
+      this.inputAxis.y = 1;
+    }
 
-      if (e.key == "A") {
-        this.inputAxis.x -= 1;
-      }
-      if (e.key == "D") {
-        this.inputAxis.x += 1;
-      }
-      if (e.key == "W") {
-        this.inputAxis.y -= 1;
-      }
-      if (e.key == "S") {
-        this.inputAxis.y += 1;
-      }
+    if (!this.moving && (this.inputAxis.x || this.inputAxis.y)) {
+      this.moving = true;
+      if (!this.inputBlocked) this.events.emit("move", true);
+    }
 
-      if (!this.moving && (this.inputAxis.x || this.inputAxis.y)) {
-        this.moving = true;
-        if (!this.inputBlocked) this.events.emit("move", true);
-      }
-      if (!this.inputBlocked) this.events.emit("inputkey");
-    });
-
-    win.on("keyup", (e) => {
-      if (e.repeat) return;
-
-      if (e.key == "A") {
-        this.inputAxis.x += 1;
-      }
-      if (e.key == "D") {
-        this.inputAxis.x -= 1;
-      }
-      if (e.key == "W") {
-        this.inputAxis.y += 1;
-      }
-      if (e.key == "S") {
-        this.inputAxis.y -= 1;
-      }
-
-      if (this.moving && !(this.inputAxis.x || this.inputAxis.y)) {
-        this.moving = false;
-        if (!this.inputBlocked) this.events.emit("move", false);
-      }
-      if (!this.inputBlocked) this.events.emit("inputkey");
-    });
+    if (this.moving && !(this.inputAxis.x || this.inputAxis.y)) {
+      this.moving = false;
+      if (!this.inputBlocked) this.events.emit("move", false);
+    }
+    if (this.inputAxis.x || this.inputAxis.y) {
+      //   if (!this.inputBlocked) this.events.emit("inputkey");
+    }
   }
 
   static blockInput(state: boolean) {

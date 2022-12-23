@@ -6,7 +6,9 @@
   "author": "Dmitri S. Cunev & Constantin N. Chitorog",
   "license": "MIT",
   "scripts": {
-    "dev": "tsx watch app.ts"
+    "dev": "tsx watch app.ts",
+    "raydev": "tsx watch raylibApp.ts"
+
   },
   "devDependencies": {
     "@types/node": "^18.11.16",
@@ -15,6 +17,7 @@
   },
   "dependencies": {
     "@tweenjs/tween.js": "18",
+    "raylib": "^0.12.0",
     "skia-canvas": "^1.0.1",
     "steamworks.js": "^0.0.25"
   }

@@ -1,4 +1,4 @@
-import { ctx, dt, win } from "../../app";
+import { ctx, dt, height, width } from "../../app";
 import { Entity } from "./Entity";
 import { lerp, lerpVector, Vector2 } from "./Math";
 
@@ -9,8 +9,8 @@ export class Camera {
   private static focusTarget: Entity;
 
   static update() {
-    ctx.translate(win.width / 2, win.height / 2);
-    ctx.scale(this.scale, this.scale);
+    ctx.rlTranslatef(width / 2, height / 2, 0);
+    ctx.rlScalef(this.scale, this.scale, 1);
     if (this.focusTarget) {
       this.position = lerpVector(
         this.position,
@@ -18,15 +18,22 @@ export class Camera {
         0.05
       );
     }
-    ctx.translate(-this.position.x, -this.position.y);
+    ctx.rlTranslatef(-this.position.x, -this.position.y, 0);
   }
 
   static untranslate() {
-    ctx.scale(1 / Camera.scale, 1 / Camera.scale);
-    ctx.translate(
-      Camera.position.x * Camera.scale - win.width / 2,
-      Camera.position.y * Camera.scale - win.height / 2
+    ctx.rlScalef(1 / Camera.scale, 1 / Camera.scale, 1);
+    ctx.rlTranslatef(
+      Camera.position.x * Camera.scale - width / 2,
+      Camera.position.y * Camera.scale - height / 2,
+      0
     );
+  }
+  static retranslate() {
+    ctx.rlTranslatef(width / 2, height / 2, 0);
+    ctx.rlScalef(this.scale, this.scale, 1);
+
+    ctx.rlTranslatef(-this.position.x, -this.position.y, 0);
   }
 
   static focus(entity: Entity) {

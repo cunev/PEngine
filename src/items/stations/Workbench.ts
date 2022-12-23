@@ -14,6 +14,7 @@ export class Workbench extends Item {
   static {
     this.instance = new this();
   }
+
   getRecipe(): { item: Item; amount: number }[] {
     return [
       { item: Plank.instance, amount: 5 },

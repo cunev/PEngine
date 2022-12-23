@@ -50,17 +50,19 @@ export class PlayerEntity extends Entity {
   }
 
   beforeDraw(): void {
-    ctx.drawImage(
+    ctx.DrawTexture(
       assets.get("playerHandBack.png")!,
       this.asset.width * this.hands.back.x,
-      this.asset.height * this.hands.back.y
+      this.asset.height * this.hands.back.y,
+      ctx.WHITE
     );
   }
   afterDraw(): void {
-    ctx.drawImage(
+    ctx.DrawTexture(
       assets.get("playerHandFront.png")!,
       this.asset.width * this.hands.front.x,
-      this.asset.height * this.hands.front.y
+      this.asset.height * this.hands.front.y,
+      ctx.WHITE
     );
   }
 }

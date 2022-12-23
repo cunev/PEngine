@@ -13,10 +13,11 @@ export class Slot {
   quantity: number = 1;
   draw() {
     if (!this.visible) return;
-    ctx.drawImage(
+    ctx.DrawTexture(
       assets.get("inventorySlot.png")!,
       this.position.x,
-      this.position.y
+      this.position.y,
+      ctx.WHITE
     );
     if (this.quantity > 1)
       smallText(
@@ -42,28 +43,47 @@ export class Slot {
     if (itemTexture.width > 120 || itemTexture.height > 120) {
       if (itemTexture.height > itemTexture.width) {
         const ratio = itemTexture.width / itemTexture.height;
-        ctx.drawImage(
+        ctx.DrawTexturePro(
           itemTexture,
-          this.position.x + 61.5 - (ratio * 90) / 2,
-          this.position.y + 61.5 - 45,
-          ratio * 100,
-          100
+          {
+            x: 0,
+            y: 0,
+            width: itemTexture.width,
+            height: itemTexture.height,
+          },
+          { x: 0, y: 0, width: ratio * 100, height: 100 },
+          {
+            x: this.position.x + 61.5 - (ratio * 90) / 2,
+            y: this.position.y + 61.5 - 45,
+          },
+          0,
+          ctx.WHITE
         );
       } else {
         const ratio = itemTexture.height / itemTexture.width;
-        ctx.drawImage(
+        ctx.DrawTexturePro(
           itemTexture,
-          this.position.x + 61.5 - 45,
-          this.position.y + 61.5 - (ratio * 90) / 2,
-          90,
-          ratio * 90
+          {
+            x: 0,
+            y: 0,
+            width: itemTexture.width,
+            height: itemTexture.height,
+          },
+          { x: 0, y: 0, width: ratio * 90, height: 90 },
+          {
+            x: this.position.x + 61.5 - 45,
+            y: this.position.y + 61.5 - (ratio * 90) / 2,
+          },
+          0,
+          ctx.WHITE
         );
       }
     } else {
-      ctx.drawImage(
+      ctx.DrawTexture(
         itemTexture,
         this.position.x + 61.5 - itemTexture.width / 2,
-        this.position.y + 61.5 - itemTexture.height / 2
+        this.position.y + 61.5 - itemTexture.height / 2,
+        ctx.WHITE
       );
     }
   }

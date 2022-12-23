@@ -9,9 +9,7 @@ export class AfterDraw {
   static drawAfterDraw() {
     const sorted = this.all.sort((a, b) => a.z - b.z);
     for (const func of sorted) {
-      ctx.save();
       func.func();
-      ctx.restore();
     }
 
     this.all = [];

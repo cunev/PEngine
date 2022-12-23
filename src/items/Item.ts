@@ -1,3 +1,4 @@
+import { Texture } from "raylib";
 import { Image } from "skia-canvas/lib";
 import { assets } from "../core/TextureManager";
 
@@ -12,7 +13,7 @@ export abstract class Item {
     console.log("new item");
   }
 
-  private textureImage?: Image;
+  private textureImage?: Texture;
 
   getTexture = () => {
     if (this.textureImage) {

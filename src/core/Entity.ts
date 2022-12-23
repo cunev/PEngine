@@ -1,4 +1,5 @@
 import EventEmitter from "events";
+import { Texture } from "raylib";
 import { Image } from "skia-canvas/lib";
 import { ctx } from "../../app";
 import { Animation } from "./Animation";
@@ -9,7 +10,7 @@ export abstract class Entity extends EventEmitter {
   position: Vector2 = { x: 0, y: 0 };
   scale: Vector2 = { x: 1, y: 1 };
   anchor: Vector2 = { x: 0, y: 0 };
-  asset!: Image;
+  asset!: Texture;
 
   animations: Map<string, Animation> = new Map<string, Animation>();
   currentAnimation: Animation | undefined;
@@ -43,16 +44,17 @@ export abstract class Entity extends EventEmitter {
     this.currentAnimation.update();
     this.asset = assets.get(this.currentAnimation.currentFrame.texture)!;
 
-    ctx.save();
-    ctx.translate(this.position.x, this.position.y);
-    ctx.scale(this.scale.x, this.scale.y);
-    ctx.translate(
+    ctx.rlPushMatrix();
+    ctx.rlTranslatef(this.position.x, this.position.y, 0);
+    ctx.rlScalef(this.scale.x, this.scale.y, 1);
+    ctx.rlTranslatef(
       -this.asset.width * this.anchor.x,
-      -this.asset.height * this.anchor.y
+      -this.asset.height * this.anchor.y,
+      0
     );
     this.beforeDraw();
-    ctx.drawImage(this.asset, 0, 0);
+    ctx.DrawTexture(this.asset, 0, 0, ctx.WHITE);
     this.afterDraw();
-    ctx.restore();
+    ctx.rlPopMatrix();
   }
 }

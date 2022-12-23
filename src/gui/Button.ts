@@ -15,21 +15,20 @@ export class Button {
   private xoff = 0;
   draw() {
     if (!this.visible) return;
-    ctx.save();
-    ctx.translate(this.position.x, this.position.y);
+
+    ctx.rlTranslatef(this.position.x, this.position.y, 0);
     if (this.isInside()) {
-      ctx.globalAlpha = 1;
+      // ctx.globalAlpha = 1;
     } else {
-      ctx.globalAlpha = 0.86;
+      // ctx.globalAlpha = 0.86;
     }
 
-    ctx.drawImage(assets.get("inventoryButton.png")!, 0, 0);
+    ctx.DrawTexture(assets.get("inventoryButton.png")!, 0, 0, ctx.WHITE);
     if (this.holdItem) this.drawItem();
 
     if (this.isInside()) {
       this.drawNotice();
     }
-    ctx.restore();
   }
 
   isInside() {
@@ -44,41 +43,56 @@ export class Button {
 
   private drawNotice() {
     AfterDraw.createAfterDraw(1, () => {
-      Camera.untranslate();
       const recipe = this.holdItem!.getRecipe();
-      ctx.translate(InputManager.relativeMouseX, InputManager.relativeMouseY);
-      ctx.strokeStyle = "rgb(40, 40, 40)";
-      ctx.fillStyle = "rgba(17, 17, 17, 0.99)";
-      ctx.roundRect(
+      ctx.rlTranslatef(
         InputManager.relativeMouseX,
         InputManager.relativeMouseY,
-        300,
-        recipe.length * 60 + 16,
-        5
+        0
       );
-      ctx.fill();
-      ctx.stroke();
+      // ctx.strokeStyle = "rgb(40, 40, 40)";
+      // ctx.fillStyle = "rgba(17, 17, 17, 0.99)";
+      // ctx.roundRect(
+      //   InputManager.relativeMouseX,
+      //   InputManager.relativeMouseY,
+      //   300,
+      //   recipe.length * 60 + 16,
+      //   5
+      // );
+      // ctx.fill();
+      // ctx.stroke();
 
       tinyText("Requires", 15, 25);
       recipe.forEach((e, index) => {
-        const itemTexture = e.item.getTexture();
+        const itemTexture = e.item.getTexture()!;
         if (itemTexture.height > itemTexture.width) {
           const ratio = itemTexture.width / itemTexture.height;
-          ctx.drawImage(
+          ctx.DrawTexturePro(
             itemTexture,
-            61.5 - (ratio * 90) / 2,
-            61.5 - 45 + index * 60,
-            ratio * 45,
-            45
+            {
+              x: 0,
+              y: 0,
+              width: itemTexture.width,
+              height: itemTexture.height,
+            },
+            { x: 0, y: 0, width: ratio * 45, height: 45 },
+            { x: 61.5 - (ratio * 90) / 2, y: 61.5 - 45 + index * 60 },
+            0,
+            ctx.WHITE
           );
         } else {
           const ratio = itemTexture.height / itemTexture.width;
-          ctx.drawImage(
+          ctx.DrawTexturePro(
             itemTexture,
-            61.5 - 45,
-            61.5 - (ratio * 90) / 2 + index * 60,
-            45,
-            ratio * 45
+            {
+              x: 0,
+              y: 0,
+              width: itemTexture.width,
+              height: itemTexture.height,
+            },
+            { x: 0, y: 0, width: 45, height: ratio * 45 },
+            { x: 61.5 - 45, y: 61.5 - (ratio * 90) / 2 + index * 60 },
+            0,
+            ctx.WHITE
           );
         }
         tinyText(`x${e.amount} ${e.item.name}`, 82, 50 + index * 60);
@@ -94,16 +108,34 @@ export class Button {
     tinyText(this.holdItem.description, 90, 53);
 
     if (itemTexture.height > itemTexture.width) {
-      ctx.drawImage(
+      ctx.DrawTexturePro(
         itemTexture,
-        58 - (ratio * 72) / 2,
-        44 - 36,
-        ratio * 55,
-        55
+        {
+          x: 0,
+          y: 0,
+          width: itemTexture.width,
+          height: itemTexture.height,
+        },
+        { x: 0, y: 0, width: ratio * 55, height: 55 },
+        { x: 58 - (ratio * 72) / 2, y: 44 - 36 },
+        0,
+        ctx.WHITE
       );
     } else {
       const ratio = itemTexture.height / itemTexture.width;
-      ctx.drawImage(itemTexture, 25, 44 - (ratio * 72) / 2, 55, ratio * 55);
+      ctx.DrawTexturePro(
+        itemTexture,
+        {
+          x: 0,
+          y: 0,
+          width: itemTexture.width,
+          height: itemTexture.height,
+        },
+        { x: 0, y: 0, width: 55, height: ratio * 55 },
+        { x: 25, y: 44 - (ratio * 72) / 2 },
+        0,
+        ctx.WHITE
+      );
     }
   }
 }
