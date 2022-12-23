@@ -46,14 +46,24 @@ export abstract class Entity extends EventEmitter {
 
     ctx.rlPushMatrix();
     ctx.rlTranslatef(this.position.x, this.position.y, 0);
-    ctx.rlScalef(this.scale.x, this.scale.y, 1);
+    ctx.rlScalef(Math.abs(this.scale.x), this.scale.y, 1);
     ctx.rlTranslatef(
       -this.asset.width * this.anchor.x,
       -this.asset.height * this.anchor.y,
       0
     );
     this.beforeDraw();
-    ctx.DrawTexture(this.asset, 0, 0, ctx.WHITE);
+    ctx.DrawTextureRec(
+      this.asset,
+      {
+        x: 0,
+        y: 0,
+        width: this.asset.width * (this.scale.x > 0 ? 1 : -1),
+        height: this.asset.height * (this.scale.y > 0 ? 1 : -1),
+      },
+      { x: 0, y: 0 },
+      ctx.WHITE
+    );
     this.afterDraw();
     ctx.rlPopMatrix();
   }

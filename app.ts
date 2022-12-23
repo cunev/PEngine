@@ -11,9 +11,10 @@ import { AfterDraw } from "./src/core/AfterDraw";
 
 export let ctx: typeof r = r;
 export let dt: number = 0;
-export const width = 1600;
-export const height = 900;
+export const width = 1920;
+export const height = 1080;
 r.InitWindow(width, height, "raylib [core] example - basic window");
+r.SetWindowPosition(1920, 0);
 r.SetTargetFPS(120);
 loadAssets();
 
@@ -38,12 +39,8 @@ while (!r.WindowShouldClose()) {
     entity.draw();
   }
 
-  r.EndDrawing();
-}
+  AfterDraw.drawAfterDraw();
+  TWEEN.update();
 
-function createWindow() {
-  while (!r.WindowShouldClose()) {
-    // AfterDraw.drawAfterDraw();
-    // TWEEN.update();
-  }
+  r.EndDrawing();
 }

@@ -2,7 +2,6 @@ import { ctx, dt } from "../../../app";
 import { Entity } from "../../core/Entity";
 import { InputManager } from "../../core/InputManager";
 import { Vector2 } from "../../core/Math";
-import { client } from "../../core/Steam";
 import { assets } from "../../core/TextureManager";
 import { IdleAnimation } from "./animations/IdleAnimation";
 import { RunAnimation } from "./animations/RunAnimation";
@@ -43,6 +42,11 @@ export class PlayerEntity extends Entity {
         ? 1 / 1.414
         : 1;
 
+    if (InputManager.inputAxis.x < 0) {
+      this.scale.x = -1;
+    } else if (InputManager.inputAxis.x > 0) {
+      this.scale.x = 1;
+    }
     if (!InputManager.inputBlocked) {
       this.position.x += InputManager.inputAxis.x * 6 * dt * speedMultiplier;
       this.position.y += InputManager.inputAxis.y * 6 * dt * speedMultiplier;
@@ -50,19 +54,37 @@ export class PlayerEntity extends Entity {
   }
 
   beforeDraw(): void {
-    ctx.DrawTexture(
-      assets.get("playerHandBack.png")!,
-      this.asset.width * this.hands.back.x,
-      this.asset.height * this.hands.back.y,
-      ctx.WHITE
-    );
+    if (this.scale.x > 0) {
+      ctx.DrawTexture(
+        assets.get("playerHandBack.png")!,
+        this.asset.width * this.hands.back.x,
+        this.asset.height * this.hands.back.y,
+        ctx.WHITE
+      );
+    } else {
+      ctx.DrawTexture(
+        assets.get("playerHandBack.png")!,
+        -this.asset.width * this.hands.back.x + this.asset.width * 0.85,
+        this.asset.height * this.hands.back.y,
+        ctx.WHITE
+      );
+    }
   }
   afterDraw(): void {
-    ctx.DrawTexture(
-      assets.get("playerHandFront.png")!,
-      this.asset.width * this.hands.front.x,
-      this.asset.height * this.hands.front.y,
-      ctx.WHITE
-    );
+    if (this.scale.x > 0) {
+      ctx.DrawTexture(
+        assets.get("playerHandFront.png")!,
+        this.asset.width * this.hands.front.x,
+        this.asset.height * this.hands.front.y,
+        ctx.WHITE
+      );
+    } else {
+      ctx.DrawTexture(
+        assets.get("playerHandFront.png")!,
+        -this.asset.width * this.hands.front.x + this.asset.width * 0.85,
+        this.asset.height * this.hands.front.y,
+        ctx.WHITE
+      );
+    }
   }
 }
