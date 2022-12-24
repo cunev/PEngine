@@ -14,6 +14,7 @@ import { Campfire } from "../items/stations/Campfire";
 import { RedShroom } from "../items/consumables/RedShroom";
 import { Plank } from "../items/elements/Plank";
 import { Rock } from "../items/elements/Rock";
+import { ManhuntAxe } from "../items/weapons/ManhuntAxe";
 export class Inventory {
   private static inventoryShowing = false;
   private static slots: Slot[] = [];
@@ -31,60 +32,60 @@ export class Inventory {
         this.toggle();
       }
     });
-    // win.on("mousedown", (e) => {
-    //   if (e.button !== 0) return;
-    //   let selectedSlot: Slot | null = null;
-    //   for (let i = 0; i < this.slots.length; i++) {
-    //     const slot = this.slots[i];
-    //     if (slot.isInside()) {
-    //       selectedSlot = slot;
-    //       break;
-    //     }
-    //   }
-    //   if (!selectedSlot) return;
-    //   this.startSlot = selectedSlot;
-    //   this.dragItem.item = selectedSlot.holdItem;
-    //   this.dragItem.quantity = selectedSlot.quantity;
+    InputManager.events.on("mousedown", (e) => {
+      if (e !== 0) return;
+      let selectedSlot: Slot | null = null;
+      for (let i = 0; i < this.slots.length; i++) {
+        const slot = this.slots[i];
+        if (slot.isInside()) {
+          selectedSlot = slot;
+          break;
+        }
+      }
+      if (!selectedSlot) return;
+      this.startSlot = selectedSlot;
+      this.dragItem.item = selectedSlot.holdItem;
+      this.dragItem.quantity = selectedSlot.quantity;
 
-    //   selectedSlot.holdItem = null;
-    //   selectedSlot.quantity = 1;
-    // });
+      selectedSlot.holdItem = null;
+      selectedSlot.quantity = 1;
+    });
 
-    // win.on("mouseup", (e) => {
-    //   if (e.button !== 0) return;
-    //   let selectedSlot: Slot | null = null;
-    //   for (let i = 0; i < this.slots.length; i++) {
-    //     const slot = this.slots[i];
-    //     if (slot.isInside()) {
-    //       selectedSlot = slot;
-    //       break;
-    //     }
-    //   }
-    //   if (!selectedSlot) {
-    //     if (this.dragItem && this.startSlot && this.dragItem.item) {
-    //       this.startSlot.holdItem = this.dragItem.item;
-    //       this.startSlot.quantity = this.dragItem.quantity;
-    //       this.dragItem.item = null;
-    //     }
-    //     return;
-    //   }
+    InputManager.events.on("mouseup", (e) => {
+      if (e !== 0) return;
+      let selectedSlot: Slot | null = null;
+      for (let i = 0; i < this.slots.length; i++) {
+        const slot = this.slots[i];
+        if (slot.isInside()) {
+          selectedSlot = slot;
+          break;
+        }
+      }
+      if (!selectedSlot) {
+        if (this.dragItem && this.startSlot && this.dragItem.item) {
+          this.startSlot.holdItem = this.dragItem.item;
+          this.startSlot.quantity = this.dragItem.quantity;
+          this.dragItem.item = null;
+        }
+        return;
+      }
 
-    //   if (
-    //     selectedSlot.holdItem &&
-    //     selectedSlot.holdItem.name == this.dragItem.item!.name
-    //   ) {
-    //     this.startSlot.holdItem = null;
-    //     this.startSlot.quantity = 1;
-    //     selectedSlot.quantity += this.dragItem.quantity;
-    //   } else {
-    //     this.startSlot.holdItem = selectedSlot.holdItem;
-    //     this.startSlot.quantity = selectedSlot.quantity;
-    //     selectedSlot.holdItem = this.dragItem.item;
-    //     selectedSlot.quantity = this.dragItem.quantity;
-    //   }
+      if (
+        selectedSlot.holdItem &&
+        selectedSlot.holdItem.name == this.dragItem.item!.name
+      ) {
+        this.startSlot.holdItem = null;
+        this.startSlot.quantity = 1;
+        selectedSlot.quantity += this.dragItem.quantity;
+      } else {
+        this.startSlot.holdItem = selectedSlot.holdItem;
+        this.startSlot.quantity = selectedSlot.quantity;
+        selectedSlot.holdItem = this.dragItem.item;
+        selectedSlot.quantity = this.dragItem.quantity;
+      }
 
-    //   this.dragItem.item = null;
-    // });
+      this.dragItem.item = null;
+    });
 
     for (let i = 0; i < 4; i++) {
       let createdSlot = new Slot();
@@ -102,7 +103,10 @@ export class Inventory {
         this.slots.push(createdSlot);
       }
     }
-    this.slots[2].holdItem = Workbench.instance;
+    this.slots[2].holdItem = ManhuntAxe.instance;
+    this.slots[0].holdItem = Campfire.instance;
+    this.slots[1].holdItem = Rock.instance;
+
     this.slots[2].quantity = 5;
 
     for (let i = 0; i < 3; i++) {
@@ -196,10 +200,15 @@ export class Inventory {
             width: itemTexture.width,
             height: itemTexture.height,
           },
-          { x: 0, y: 0, width: ratio * 100, height: 100 },
           {
             x: InputManager.relativeMouseX - (ratio * 90) / 2,
             y: InputManager.relativeMouseY - 45,
+            width: ratio * 100,
+            height: 100,
+          },
+          {
+            x: 0,
+            y: 0,
           },
           0,
           ctx.WHITE
@@ -214,10 +223,15 @@ export class Inventory {
             width: itemTexture.width,
             height: itemTexture.height,
           },
-          { x: 0, y: 0, width: 90, height: 90 * ratio },
           {
             x: InputManager.relativeMouseX - 45,
             y: InputManager.relativeMouseY - (ratio * 90) / 2,
+            width: 90,
+            height: 90 * ratio,
+          },
+          {
+            x: 0,
+            y: 0,
           },
           0,
           ctx.WHITE

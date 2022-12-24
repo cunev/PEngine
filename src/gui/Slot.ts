@@ -49,12 +49,17 @@ export class Slot {
         ctx.DrawTexturePro(
           itemTexture,
           {
-            x: this.position.x + 61.5 - (ratio * 90) / 2,
-            y: this.position.y + 61.5 - 45,
+            x: 0,
+            y: 0,
             width: itemTexture.width,
             height: itemTexture.height,
           },
-          { x: 0, y: 0, width: ratio * 100, height: 100 },
+          {
+            x: this.position.x + 61.5 - (ratio * 90) / 2,
+            y: this.position.y + 61.5 - 45,
+            width: 90 * ratio,
+            height: 90,
+          },
           {
             x: 0,
             y: 0,
@@ -74,9 +79,9 @@ export class Slot {
           },
           {
             x: this.position.x + 61.5 - 45,
-            y: this.position.y + 61.5 - (ratio * 90) / 2,
-            width: ratio * 90,
-            height: 90,
+            y: this.position.y + 61.5 - (90 * ratio) / 2,
+            width: 90,
+            height: 90 * ratio,
           },
           {
             x: 0,

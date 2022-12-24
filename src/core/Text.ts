@@ -1,6 +1,8 @@
 import { ctx } from "../../app";
 
 export function largeText(text: string, x: number, y: number) {
+  ctx.DrawText(text, x, y - 15, 28, ctx.WHITE);
+
   // ctx.save();
   // ctx.fillStyle = "white";
   // ctx.strokeStyle = "black";
@@ -12,6 +14,8 @@ export function largeText(text: string, x: number, y: number) {
 }
 
 export function normalText(text: string, x: number, y: number) {
+  ctx.DrawText(text, x, y - 12, 22, ctx.WHITE);
+
   // ctx.save();
   // ctx.fillStyle = "white";
   // ctx.strokeStyle = "black";
@@ -23,6 +27,8 @@ export function normalText(text: string, x: number, y: number) {
 }
 
 export function smallText(text: string, x: number, y: number) {
+  ctx.DrawText(text, x, y - 12, 18, ctx.WHITE);
+
   // ctx.save();
   // ctx.fillStyle = "white";
   // ctx.strokeStyle = "black";
@@ -34,6 +40,8 @@ export function smallText(text: string, x: number, y: number) {
 }
 
 export function tinyText(text: string, x: number, y: number) {
+  ctx.DrawText(text, x, y - 12, 16, ctx.WHITE);
+
   // ctx.save();
   // ctx.fillStyle = "white";
   // ctx.strokeStyle = "black";

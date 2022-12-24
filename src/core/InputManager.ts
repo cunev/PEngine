@@ -29,6 +29,14 @@ export class InputManager {
       }
     }
 
+    if (ctx.IsMouseButtonPressed(0)) {
+      this.events.emit("mousedown", 0);
+    }
+
+    if (ctx.IsMouseButtonReleased(0)) {
+      this.events.emit("mouseup", 0);
+    }
+
     const mouseposition = ctx.GetMousePosition();
     this.relativeMouseX = mouseposition.x;
     this.relativeMouseY = mouseposition.y;
